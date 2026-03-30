@@ -1,13 +1,17 @@
-from sqlalchemy import Column, String, Enum, Boolean
+import enum
+import uuid
+
+from app.core.database import Base
+from sqlalchemy import Boolean, Column, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
-from app.core.database import Base 
 from sqlalchemy.orm import relationship
-import uuid, enum
+
 
 class Role(str, enum.Enum):
     scholar = "scholar"
     evaluator = "evaluator"
     admin = "admin"
+
 
 class User(Base):
     __tablename__ = "users"
