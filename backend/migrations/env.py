@@ -1,16 +1,21 @@
+import os
+import sys
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
-import sys, os 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from app.core.database import Base 
-from app.models.user import User
+from app.core.database import Base
+from app.models.academic_record import AcademicRecord
+from app.models.announcement import Announcement
+from app.models.document import Document
+from app.models.pending_change import PendingChange
+from app.models.program_history import ProgramHistory
+from app.models.prospectus_grade import ProspectusGrade
 from app.models.scholar import Scholar
+from app.models.user import User
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -67,14 +72,13 @@ def run_migrations_online() -> None:
 
     from dotenv import load_dotenv
     from sqlalchemy import create_engine
+
     load_dotenv()
 
     connectable = create_engine(os.getenv("DATABASE_URL"))
-    
+
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

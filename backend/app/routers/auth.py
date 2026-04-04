@@ -26,6 +26,20 @@ class GoogleTokenRequest(BaseModel):
     token: str
 
 
+# TEMPORARY — remove before going to production
+@router.post("/dev-login")
+def dev_login(email: str, db: Session = Depends(get_db)):
+    import os
+
+    if os.getenv("ENV") != "development":
+        raise HTTPException(status_code=404, detail="Not found")
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    token = create_token({"sub": str(user.id), "role": user.role})
+    return {"access_token": token, "token_type": "bearer"}
+
+
 @router.post("/google")
 def google_login(body: GoogleTokenRequest, db: Session = Depends(get_db)):
     import os
